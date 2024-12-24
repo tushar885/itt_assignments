@@ -1,8 +1,11 @@
 #include <stdio.h>
 #include <string.h>
-int operands_st[200];
+
+#define MAX 300
+
+int operands_st[MAX];
 int od_top = -1;
-int operators_st[100];
+int operators_st[MAX];
 int op_top = -1;
 
 int isOperand(char ch)
@@ -23,45 +26,19 @@ int isOperator(char ch)
     return 0;
 }
 
-int precedence(char op1, char op2)
+int precedence(char op)
 {
-    int precedence1, precedence2;
-    switch (op1)
-    {
-    case '+':
-    case '-':
-        precedence1 = 1;
-        break;
-    case '*':
-    case '/':
-        precedence1 = 2;
-        break;
-    default:
-        return -1;
-    }
-    switch (op2)
-    {
-    case '+':
-    case '-':
-        precedence2 = 1;
-        break;
-    case '*':
-    case '/':
-        precedence2 = 2;
-        break;
-    default:
-        return -1;
-    }
-    if (precedence1 == precedence2)
-        return 0;
-    return (precedence1 > precedence2) ? 1 : -1;
+    if (op == '+' || op == '-')
+        return 1;
+    if (op == '*' || op == '/')
+        return 2;
+    return 0;
 }
 
-int calculate()
+int calculate(char op)
 {
     int op2 = operands_st[od_top--];
     int op1 = operands_st[od_top--];
-    char op = operators_st[op_top--];
 
     switch (op)
     {
@@ -80,79 +57,89 @@ int calculate()
     return 0;
 }
 
-int parse_expression(char exp[])
+int infix_to_postfix_conversion(char infix[], char postfix[])
 {
-    int all_empty = 1;
-    int i = 0;
-    int expect_operand = 1;
 
-    while (i < strlen(exp))
+    int i, j;
+    i = j = 0;
+
+    int expecting_operand = 1;
+
+    while (i < strlen(infix))
     {
-        if (exp[i] == ' ')
+
+        if (infix[i] == ' ')
         {
             i++;
             continue;
         }
 
-        if (exp[i] == '-' && expect_operand)
+        if (isOperand(infix[i]) || (infix[i] == '-' && isOperand(infix[i + 1]) && expecting_operand))
         {
 
-            if (i + 1 < strlen(exp) && isOperand(exp[i + 1]))
+            if (!expecting_operand)
+                return -1;
+
+            int isNegative = 1;
+            if (infix[i] == '-')
             {
-                int num = 0;
-                int sign = -1;
-                i++;
-
-                while (i < strlen(exp) && isOperand(exp[i]))
-                {
-                    num = num * 10 + (exp[i] - '0');
-                    i++;
-                }
-
-                operands_st[++od_top] = sign * num;
-                expect_operand = 0;
-                continue;
-            }
-        }
-
-        if (isOperand(exp[i]))
-        {
-            if (all_empty)
-                all_empty = 0;
-            int num = 0;
-            while (i < strlen(exp) && isOperand(exp[i]))
-            {
-                num = num * 10 + (exp[i] - '0');
+                isNegative = -1;
                 i++;
             }
-            operands_st[++od_top] = num;
-            expect_operand = 0;
+
+            int operand = 0;
+            while (isOperand(infix[i]))
+            {
+                operand = operand * 10 + (infix[i] - '0');
+                i++;
+            }
+
+            operand *= isNegative;
+
+            if (operand < 0)
+            {
+                postfix[j] = '-';
+                j++;
+                operand = -operand;
+            }
+
+            char buffer[12];
+            int len = 0;
+
+            do
+            {
+                buffer[len] = (operand % 10) + '0';
+                operand /= 10;
+                len++;
+            } while (operand > 0);
+
+            for (int k = len - 1; k > -1; k--)
+            {
+                postfix[j] = buffer[k];
+                j++;
+            }
+
+            postfix[j] = ' ';
+            j++;
+
+            expecting_operand = 0;
         }
-        else if (isOperator(exp[i]))
+        else if (isOperator(infix[i]))
         {
 
-            if (expect_operand && exp[i] != '-')
-            {
+            if (expecting_operand)
                 return -1;
+
+            while (op_top != -1 && precedence(operators_st[op_top]) >= precedence(infix[i]))
+            {
+
+                postfix[j++] = operators_st[op_top--];
+                postfix[j++] = ' ';
             }
 
-            if (i + 1 == strlen(exp) || (isOperator(exp[i + 1]) && exp[i + 1] != '-'))
-            {
-                return -1;
-            }
+            operators_st[++op_top] = infix[i++];
 
-            while (op_top != -1 && precedence(exp[i], operators_st[op_top]) <= 0)
-            {
-                int result = calculate();
-                if (result == -2)
-                {
-                    return -2;
-                }
-                operands_st[++od_top] = result;
-            }
-            operators_st[++op_top] = exp[i];
-            expect_operand = 1;
-            i++;
+            expecting_operand = 1;
         }
         else
         {
@@ -160,37 +147,92 @@ int parse_expression(char exp[])
         }
     }
 
+    if (expecting_operand)
+        return -1;
+
     while (op_top != -1)
     {
-        int result = calculate();
-        if (result == -2)
-        {
-            return -2;
-        }
-        operands_st[++od_top] = result;
+        postfix[j++] = operators_st[op_top--];
+        postfix[j++] = ' ';
     }
 
-    if (all_empty)
-        return -3;
-    return 0;
+    postfix[j] = '\0';
+    return 1;
+}
+
+int parse_expression(char exp[])
+{
+    int i = 0;
+
+    while (i < strlen(exp))
+    {
+
+        if (isOperand(exp[i]) || (exp[i] == '-' && isOperand(exp[i + 1])))
+        {
+
+            int operand = 0, isNeg = 1;
+            if (exp[i] == '-')
+            {
+                isNeg = -1;
+                i++;
+            }
+            while (isOperand(exp[i]))
+            {
+                operand = operand * 10 + (exp[i] - '0');
+                i++;
+            }
+
+            operand *= isNeg;
+
+            operands_st[++od_top] = operand;
+        }
+        else if (isOperator(exp[i]))
+        {
+
+            if (od_top < 1)
+                return -1;
+
+            int result = calculate(exp[i]);
+
+            if (result == -2)
+                return result;
+
+            operands_st[++od_top] = result;
+
+            i++;
+        }
+        else
+            i++;
+    }
+    return operands_st[od_top--];
 }
 
 int main()
 {
-    char str[200];
+    char infix[MAX];
+    char postfix[MAX];
+
     printf("Enter a string: ");
-    if (fgets(str, sizeof(str), stdin))
-    {
-        str[strcspn(str, "\n")] = 0;
-    }
-    size_t len = strlen(str);
+
+    scanf("%299[^\n]%*c", infix);
+    size_t len = strlen(infix);
     if (len == 0)
     {
         printf("You entered an empty string\n");
         return 0;
     }
 
-    int result = parse_expression(str);
+    int result = infix_to_postfix_conversion(infix, postfix);
+
+    if (result == -1)
+    {
+        printf("Error: Invalid Expression");
+        return 0;
+    }
+
+    printf("Postfix Expression is: %s\n", postfix);
+
+    result = parse_expression(postfix);
     if (result == -1)
     {
         printf("Error: Invalid expression\n");
@@ -199,13 +241,9 @@ int main()
     {
         printf("Error: Division by zero\n");
     }
-    else if (result == -3)
-    {
-        printf("Error: Empty expression\n");
-    }
     else
     {
-        printf("Result: %d\n", operands_st[od_top]);
+        printf("Result: %d\n", result);
     }
     return 0;
 }
