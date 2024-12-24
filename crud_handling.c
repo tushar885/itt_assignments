@@ -21,7 +21,8 @@ int main()
 {
   createFile();
   int operation;
-  while (1)
+  int islooping = 1;
+  while (islooping)
   {
 
     printf("Hey, please select one option\n");
@@ -57,7 +58,8 @@ int main()
       break;
 
     case 6:
-      exit(0);
+      islooping = -1;
+      break;
 
     default:
       printf("Invalid operation\n");
@@ -71,7 +73,6 @@ void createFile()
   if (file == NULL)
   {
     printf("Error in creating file\n");
-    exit(1);
   }
   fclose(file);
 }
@@ -84,7 +85,6 @@ void clearFile()
   if (file == NULL)
   {
     printf("File Not Found\n");
-    exit(1);
   }
   else
   {
@@ -93,30 +93,65 @@ void clearFile()
   fclose(file);
 }
 
+int isUserIdUnique(int id)
+{
+
+  FILE *file = fopen(FILE_NAME, "r");
+  if (file == NULL)
+  {
+    return -2;
+  }
+
+  struct User user;
+
+  while (fscanf(file, "%d,%49[^,],%d", &user.id, user.name, &user.age) == 3)
+  {
+
+    if (user.id == id)
+    {
+      fclose(file);
+      return 1;
+    }
+  }
+  fclose(file);
+  return -1;
+}
+
 void createUser()
 {
   printf("\nEnter User Details: \n");
-
-  FILE *file = fopen(FILE_NAME, "a");
-  if (file == NULL)
-  {
-    printf("Error in Creating User\n");
-    return;
-  }
-
   struct User user;
 
   printf("Enter User ID: ");
   scanf("%d", &user.id);
   printf("Enter User Name: ");
-  scanf(" %[^\n]", user.name);
+  scanf(" %49[^\n]", user.name);
   printf("Enter User Age: ");
   scanf("%d", &user.age);
 
-  fprintf(file, "%d,%s,%d\n", user.id, user.name, user.age);
-  fclose(file);
+  int is_ID_present = isUserIdUnique(user.id);
 
-  printf("User Created Successfully\n");
+  if (is_ID_present == 1)
+  {
+    printf("User ID already present\n");
+  }
+  else if (is_ID_present == -2)
+  {
+    printf("Error in Creating User\n");
+  }
+  else
+  {
+
+    FILE *file = fopen(FILE_NAME, "a");
+    if (file == NULL)
+    {
+      printf("Error in Creating User\n");
+      return;
+    }
+    fprintf(file, "%d,%s,%d\n", user.id, user.name, user.age);
+    printf("User Created Successfully\n");
+    fclose(file);
+  }
 }
 
 void readUser()
