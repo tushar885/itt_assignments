@@ -83,5 +83,7 @@ int main()
         printf("\n");
     }
 
+    free(array);
+
     return 0;
 }
