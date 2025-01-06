@@ -12,23 +12,23 @@ void matrix_spiral_traversal(int *array, int rows, int columns)
     while (row_start <= row_end && column_start <= column_end)
     {
 
-        for (int i = column_start; i <= column_end; i++)
+        for (int iterator = column_start; iterator <= column_end; iterator++)
         {
-            printf("%d ", *((array + (row_start * columns) + i)));
+            printf("%d ", *((array + (row_start * columns) + iterator)));
         }
         row_start++;
 
-        for (int i = row_start; i <= row_end; i++)
+        for (int iterator = row_start; iterator <= row_end; iterator++)
         {
-            printf("%d ", *((array + (i * columns) + column_end)));
+            printf("%d ", *((array + (iterator * columns) + column_end)));
         }
         column_end--;
 
         if (row_start <= row_end)
         {
-            for (int i = column_end; i >= column_start; i--)
+            for (int iterator = column_end; iterator >= column_start; iterator--)
             {
-                printf("%d ", *((array + (row_end * columns) + i)));
+                printf("%d ", *((array + (row_end * columns) + iterator)));
             }
             row_end--;
         }
@@ -36,9 +36,9 @@ void matrix_spiral_traversal(int *array, int rows, int columns)
         if (column_start <= column_end)
         {
 
-            for (int i = row_end; i >= row_start; i--)
+            for (int iterator = row_end; iterator >= row_start; iterator--)
             {
-                printf("%d ", *((array + (i * columns) + column_start)));
+                printf("%d ", *((array + (iterator * columns) + column_start)));
             }
             column_start++;
         }
