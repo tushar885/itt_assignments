@@ -1,1 +1,3 @@
-### Repo for itt assignments, each assignment is attached as a branch
+### Statemnt
+
+- Take Input of two matrices and check if there trace are equal or not.
