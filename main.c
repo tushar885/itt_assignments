@@ -24,6 +24,17 @@ int compute_frequency(char *string, char frequency_char)
     return frq;
 }
 
+void free_dynamic_memory(char **string_array, int size)
+{
+
+    for (int itr = 0; itr < size; itr++)
+    {
+        free(string_array[itr]);
+    }
+
+    free(string_array);
+}
+
 int main()
 {
 
