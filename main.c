@@ -43,7 +43,7 @@ int main()
     scanf("%d", &size);
 
     char **string_array = (char **)malloc(size * sizeof(char *));
-
+    printf("\nEnter the Strings: \n");
     for (int i = 0; i < size; i++)
     {
 
