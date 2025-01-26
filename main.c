@@ -11,7 +11,13 @@ struct matrix
 struct matrix *input_matrix()
 {
 
-    struct matrix *m = (struct matrix *)malloc(sizeof(struct matrix));
+    struct matrix *matrix = (struct matrix *)malloc(sizeof(struct matrix));
+
+    if (matrix == NULL)
+    {
+        printf("Memory couldn't be allocated!!!");
+        return NULL;
+    }
 
     printf("\nEnter the Matrix Size: ");
 
@@ -19,30 +25,36 @@ struct matrix *input_matrix()
     printf("\nSize: ");
     scanf("%d", &size);
 
-    m->rows = size;
-    m->columns = size;
-
-    m->array = (int **)calloc(m->rows, sizeof(int *));
-
-    for (int i = 0; i < m->rows; i++)
+    if (size <= 0)
     {
-        m->array[i] = (int *)calloc(m->columns, sizeof(int));
+        printf("Invalid Size Input!!!");
+        return NULL;
+    }
+
+    matrix->rows = size;
+    matrix->columns = size;
+
+    matrix->array = (int **)calloc(matrix->rows, sizeof(int *));
+
+    for (int row = 0; row < matrix->rows; row++)
+    {
+        matrix->array[row] = (int *)calloc(matrix->columns, sizeof(int));
     }
 
     printf("\n Enter elements: \n");
 
-    for (int i = 0; i < m->rows; i++)
+    for (int row = 0; row < matrix->rows; row++)
     {
-        for (int j = 0; j < m->columns; j++)
+        for (int column = 0; column < matrix->columns; column++)
         {
-            scanf("%d", (*(m->array + i) + j));
+            scanf("%d", (*(matrix->array + row) + column));
         }
     }
 
-    return m;
+    return matrix;
 }
 
-int free_matrix_memory(struct matrix *ptr)
+void free_matrix_memory(struct matrix *ptr)
 {
 
     for (int i = 0; i < ptr->rows; i++)
@@ -52,7 +64,6 @@ int free_matrix_memory(struct matrix *ptr)
 
     free(ptr->array);
     free(ptr);
-    return 0;
 }
 
 int calculate_trace(struct matrix *ptr)
@@ -60,10 +71,10 @@ int calculate_trace(struct matrix *ptr)
 
     int trace = 0;
 
-    for (int i = 0; i < ptr->rows; i++)
+    for (int row = 0; row < ptr->rows; row++)
     {
 
-        trace += ptr->array[i][i];
+        trace += ptr->array[row][row];
     }
 
     return trace;
@@ -72,24 +83,24 @@ int calculate_trace(struct matrix *ptr)
 int main()
 {
 
-    struct matrix *first_m = input_matrix();
-    struct matrix *second_m = input_matrix();
+    struct matrix *first_matrix = input_matrix();
+    struct matrix *second_matrix = input_matrix();
 
-    int first_m_trace = calculate_trace(first_m);
-    int second_m_trace = calculate_trace(second_m);
+    int first_matrix_trace = calculate_trace(first_matrix);
+    int second_matrix_trace = calculate_trace(second_matrix);
 
-    printf("\nTrace of first matrix: %d", first_m_trace);
-    printf("\nTrace of second matrix: %d", second_m_trace);
+    printf("\nTrace of first matrix: %d", first_matrix_trace);
+    printf("\nTrace of second matrix: %d", second_matrix_trace);
 
-    if (first_m_trace == second_m_trace)
+    if (first_matrix_trace == second_matrix_trace)
     {
         printf("\nTrace of both matrix are equal");
     }
     else
         printf("\nTrace is not equal");
 
-    free_matrix_memory(first_m);
-    free_matrix_memory(second_m);
+    free_matrix_memory(first_matrix);
+    free_matrix_memory(second_matrix);
 
     return 0;
 }
