@@ -10,21 +10,21 @@ int string_length(char *string)
     return size;
 }
 
-int isSubstring(char *substring, char *superstring)
+int is_sub_string(char *sub_string, char *super_string)
 {
-    int len_sub = string_length(substring);
-    int len_super = string_length(superstring);
+    int sub_string_length = string_length(sub_string);
+    int super_string_length = string_length(super_string);
 
-    for (int i = 0; i <= len_super - len_sub; i++)
+    for (int super_string_index = 0; super_string_index <= super_string_length - sub_string_length; super_string_index++)
     {
-        int j;
-        for (j = 0; j < len_sub; j++)
+        int sub_string_index;
+        for (sub_string_index = 0; sub_string_index < sub_string_length; sub_string_index++)
         {
-            if (superstring[i + j] != substring[j])
+            if (super_string[super_string_index + sub_string_index] != sub_string[sub_string_index])
                 break;
         }
 
-        if (j == len_sub)
+        if (sub_string_index == sub_string_length)
             return 1;
     }
 
@@ -34,9 +34,9 @@ int isSubstring(char *substring, char *superstring)
 void free_dynamic_memory(char **string_array, int size)
 {
 
-    for (int itr = 0; itr < size; itr++)
+    for (int index = 0; index < size; index++)
     {
-        free(string_array[itr]);
+        free(string_array[index]);
     }
 
     free(string_array);
@@ -49,28 +49,41 @@ int main()
     printf("Enter the length of string array: ");
     scanf("%d", &size);
 
-    char **string_array = (char **)malloc(size * sizeof(char *));
-    printf("\nEnter the strings of array: \n");
-    for (int i = 0; i < size; i++)
+    if (size <= 0)
     {
-
-        string_array[i] = (char *)malloc(50 * sizeof(char));
-        scanf("%s%*c", string_array[i]);
+        printf("Invalid Input!!!");
+        return 0;
     }
 
-    char string_to_check_for[50];
+    char **string_array = (char **)malloc(size * sizeof(char *));
+
+    if (string_array == NULL)
+    {
+        printf("Error in Memory Allocation");
+        return 0;
+    }
+
+    printf("\nEnter the strings of array: \n");
+    for (int index = 0; index < size; index++)
+    {
+
+        string_array[index] = (char *)malloc(50 * sizeof(char));
+        scanf("%s%*c", string_array[index]);
+    }
+
+    char sub_string_input[50];
     printf("\nEnter the String to check for as substring: ");
-    scanf("%s%*c", string_to_check_for);
+    scanf("%s", sub_string_input);
 
     int found_super_string = 0;
 
-    for (int itr = 0; itr < size; itr++)
+    for (int index = 0; index < size; index++)
     {
 
-        if (isSubstring(string_to_check_for, string_array[itr]) == 1)
+        if (is_sub_string(sub_string_input, string_array[index]) == 1)
         {
             found_super_string = 1;
-            printf("\n%s", string_array[itr]);
+            printf("\n%s", string_array[index]);
         }
     }
 
