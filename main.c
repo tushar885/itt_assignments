@@ -86,6 +86,9 @@ int main()
     struct matrix *first_matrix = input_matrix();
     struct matrix *second_matrix = input_matrix();
 
+    if (first_matrix == NULL || second_matrix == NULL)
+        return 0;
+
     int first_matrix_trace = calculate_trace(first_matrix);
     int second_matrix_trace = calculate_trace(second_matrix);
 
