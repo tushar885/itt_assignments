@@ -13,62 +13,50 @@ Node *createNode(int data)
     if (!newNode)
     {
         printf("Memory Allocation Failed\n");
-        exit(1);
+        return NULL;
     }
     newNode->data = data;
     newNode->next = NULL;
     return newNode;
 }
 
-void addAtEnd(Node **head, int key)
+void addNode(Node **head, int data, int pos)
 {
-    Node *newNode = createNode(key);
-    if (*head == NULL)
-    {
-        *head = newNode;
+    Node *newNode = createNode(data);
+    if (newNode == NULL)
         return;
-    }
-    Node *curr = *head;
-    while (curr->next != NULL)
-    {
-        curr = curr->next;
-    }
-    curr->next = newNode;
-}
 
-void addAtbeginning(Node **head, int data)
-{
-    Node *newNode = createNode(data);
-    newNode->next = *head;
-    *head = newNode;
-}
-void addAtGivenPosition(Node **head, int pos, int data)
-{
-    if (pos <= 0)
-    {
-        printf("Invalid Position\n");
-        return;
-    }
-    Node *newNode = createNode(data);
-    if (pos == 1)
+    if (pos == 1 || *head == NULL)
     {
         newNode->next = *head;
         *head = newNode;
         return;
     }
+
     Node *curr = *head;
-    int i = 1;
-    while (curr != NULL && i < pos - 1)
+
+    if (pos == -1)
+    {
+        while (curr->next != NULL)
+        {
+            curr = curr->next;
+        }
+        curr->next = newNode;
+        return;
+    }
+
+    while (curr != NULL && --pos > 1)
     {
         curr = curr->next;
-        i++;
     }
+
     if (curr == NULL)
     {
-        printf("Invalid Position");
+        printf("Invalid Position\n");
         free(newNode);
         return;
     }
+
     newNode->next = curr->next;
     curr->next = newNode;
 }
@@ -95,72 +83,56 @@ void updateAtGivenPosition(Node **head, int pos, int data)
     curr->data = data;
 }
 
-void deleteFirst(Node **head)
+void deleteNode(Node **head, int pos)
 {
-    if (*head == NULL)
+    if (*head == NULL || pos < 1)
     {
         return;
     }
-    Node *temp = *head;
-    *head = (*head)->next;
-    free(temp);
-}
 
-void deleteLast(Node **head)
-{
-    if (*head == NULL)
-    {
-        return;
-    }
-    if ((*head)->next == NULL)
-    {
-        free(*head);
-        *head = NULL;
-        return;
-    }
     Node *temp = *head;
-    Node *prev = NULL;
-    while (temp->next != NULL)
-    {
-        prev = temp;
-        temp = temp->next;
-    }
-    prev->next = NULL;
-    free(temp);
-}
 
-void deleteAtGivenPosition(Node **head, int pos)
-{
-    if (*head == NULL)
-    {
-        return;
-    }
-    if (pos < 1)
-    {
-        return;
-    }
     if (pos == 1)
     {
-        Node *temp = *head;
         *head = (*head)->next;
         free(temp);
         return;
     }
 
-    Node *temp = *head;
     Node *prev = NULL;
-    int i = 1;
 
-    while (temp != NULL && i < pos)
+    if (pos == -1)
+    {
+        while (temp->next != NULL)
+        {
+            prev = temp;
+            temp = temp->next;
+        }
+
+        if (prev == NULL)
+        {
+            free(*head);
+            *head = NULL;
+        }
+        else
+        {
+            prev->next = NULL;
+            free(temp);
+        }
+        return;
+    }
+
+    while (temp != NULL && --pos > 0)
     {
         prev = temp;
         temp = temp->next;
-        i++;
     }
+
     if (temp == NULL)
     {
         return;
     }
+
     prev->next = temp->next;
     free(temp);
 }
@@ -176,11 +148,32 @@ void printList(Node **head)
     printf("\n");
 }
 
+void freeList(Node **head)
+{
+    Node *current = *head;
+    Node *nextNode;
+
+    while (current != NULL)
+    {
+        nextNode = current->next;
+        free(current);
+        current = nextNode;
+    }
+
+    *head = NULL;
+}
+
 int main()
 {
     Node *head = NULL;
     int noOfOperations;
     scanf("%d", &noOfOperations);
+
+    if (noOfOperations <= 0)
+    {
+        printf("Invalid Input");
+        return 0;
+    }
 
     while (noOfOperations > 0)
     {
@@ -190,27 +183,27 @@ int main()
         {
         case 1:
         {
-            int key;
-            scanf("%d", &key);
-            addAtEnd(&head, key);
+            int data;
+            scanf("%d", &data);
+            addNode(&head, data, -1);
             printList(&head);
             break;
         }
         case 2:
         {
-            int key;
-            scanf("%d", &key);
-            addAtbeginning(&head, key);
+            int data;
+            scanf("%d", &data);
+            addNode(&head, data, 1);
             printList(&head);
             break;
         }
         case 3:
         {
-            int key;
+            int data;
             int pos;
             scanf("%d", &pos);
-            scanf("%d", &key);
-            addAtGivenPosition(&head, pos, key);
+            scanf("%d", &data);
+            addNode(&head, data, pos);
             printList(&head);
             break;
         }
@@ -221,23 +214,23 @@ int main()
         }
         case 5:
         {
-            int key;
+            int data;
             int pos;
             scanf("%d", &pos);
-            scanf("%d", &key);
-            updateAtGivenPosition(&head, pos, key);
+            scanf("%d", &data);
+            updateAtGivenPosition(&head, pos, data);
             printList(&head);
             break;
         }
         case 6:
         {
-            deleteFirst(&head);
+            deleteNode(&head, 1);
             printList(&head);
             break;
         }
         case 7:
         {
-            deleteLast(&head);
+            deleteNode(&head, -1);
             printList(&head);
             break;
         }
@@ -245,18 +238,19 @@ int main()
         {
             int pos;
             scanf("%d", &pos);
-            deleteAtGivenPosition(&head, pos);
+            deleteNode(&head, pos);
             printList(&head);
             break;
         }
         default:
         {
             printf("Please choose between 1 to 8\n");
-            break;
         }
         }
         noOfOperations--;
     }
+
+    freeList(&head);
 
     return 0;
 }
