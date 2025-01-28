@@ -14,20 +14,20 @@ The final linked list should preserve the alternate arrangement of nodes.
 ### Input:
 
 ```
-10 40 53 30 67 12 89
+10 40 53 30 4 50 89
 ```
 
 ### Output:
 
 ```
-10 89 30 67 40 53 12
+4 50 10 40 53 30 89
 ```
 
 ### Explanation:
 
-- Nodes at odd positions: `10, 53, 67, 89` → Sorted in ascending order: `10, 30, 40, 67`
-- Nodes at even positions: `40, 30, 12` → Sorted in descending order: `89, 67, 53, 40, 12`
-- Alternating merge: `10 -> 89 -> 30 -> 67 -> 40 -> 53 -> 12`
+- Nodes at odd positions: `10, 53, 4, 89` → Sorted in ascending order: `4, 10, 53, 89`
+- Nodes at even positions: `40, 30, 50` → Sorted in descending order: `50, 40, 30`
+- Alternating merge: `4 -> 50 -> 10 -> 40 -> 53 -> 30 -> 89`
 
 ## Constraints:
 
