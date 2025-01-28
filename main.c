@@ -95,8 +95,6 @@ struct Node *partition(struct Node *head, struct Node **left, struct Node **righ
     struct Node *current = head->next;
 
     struct Node *leftTail = NULL, *rightTail = NULL;
-    *left = NULL;
-    *right = NULL;
 
     while (current)
     {
