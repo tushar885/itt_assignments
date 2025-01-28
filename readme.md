@@ -1,64 +1,42 @@
-# Problem Statement: Reorder Delivery Packages
+### Problem Statement:
 
-You are tasked with reorganizing a list of delivery packages for a courier service. Each package is represented as a node in a singly linked list, where every node contains the **package weight** in kilograms (an integer).
+You are tasked with helping a library organize its book inventory. The library stores book records in a singly linked list, where each node represents a book, and the `data` field of the node stores the unique ID of the book (an integer). The library manager wants the books to be arranged in ascending order of their IDs to make searching for books more efficient.
 
-Due to a processing error, the list of packages is in random order. Your goal is to rearrange the list so that the packages are sorted by their weight in **non-decreasing order**. You should use an efficient sorting algorithm to accomplish this.
+Due to memory constraints, you cannot use any additional data structures like arrays or vectors to sort the IDs. Design an efficient sorting algorithm to rearrange the linked list so that it satisfies the manager's requirement.
 
----
+### Input Format:
 
-## Input Format
+- A singly linked list of `n` integers, where each integer represents the unique ID of a book.
 
-- A singly linked list where each node contains:
-  - `weight` (integer): The weight of the package in kilograms.
-  - `next`: A pointer to the next node in the list.
+### Output Format:
 
-The input is the `head` of the linked list.
+- A singly linked list sorted in ascending order of the book IDs.
 
----
+### Example:
 
-## Output Format
-
-- Return the `head` of the sorted linked list, where the nodes are ordered by their `weight` in ascending order.
-
----
-
-## Examples
-
-**Input:**
+#### Input:
 
 ```
-7 3 9 1 14
+5 3 8 6 2 7 4 1
 ```
 
-**Output:**
+#### Output:
 
 ```
-1 3 7 9 14
+1 2 3 4 5 6 7 8
 ```
 
----
+### Time Complexity:
 
-## Time Complexity
+- **Average and Best Case**: `O(n log n)`
+- **Worst Case**: `O(n^2)` (for linked list with unbalanced partitions)
 
-1. **Splitting the List:**  
-   Each split operation divides the list into two halves. Since the list is divided repeatedly until we reach individual nodes, this takes \( O(\log n) \) operations.
+### Space Complexity:
 
-2. **Merging the Lists:**  
-   Merging two sorted linked lists takes \( O(n) \), where \( n \) is the total number of nodes in the list.
+- `O(log n)` (for recursion stack in the Quick Sort algorithm)
 
-3. **Overall Time Complexity:**  
-   Since merging is performed at every level of recursion, the total complexity is:
-   O(n log n)
+### Constraints:
 
----
-
-## Space Complexity
-
-1. **Auxiliary Space:**  
-   The recursion stack used during the splitting process requires \( O(\log n) \) space.
-
-2. **In-Place Merging:**  
-   The merge operation does not require any extra space as it is performed in place.
-
-3. **Overall Space Complexity:**  
-   O(log n)
+1. The linked list can contain up to `10,000` nodes.
+2. Do not use any additional data structures like arrays or vectors.
+3. The sorting should be done in-place.
