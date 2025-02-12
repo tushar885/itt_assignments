@@ -36,30 +36,35 @@ void inputStringToArray(int **array, int *size)
     *size = *size + 1;
 
     *array = malloc(*size * sizeof(int));
+    if (array == NULL)
+    {
+        printf("Error in memory allocation");
+        return;
+    }
     int index = 0;
-    i = 0;
+    int itr = 0;
 
-    while (str[i] != '\0')
+    while (str[itr] != '\0')
     {
         int sign = 1;
-        if (str[i] == '-')
+        if (str[itr] == '-')
         {
             sign = -1;
-            i++;
+            itr++;
         }
-        if (isDigit(str[i]))
+        if (isDigit(str[itr]))
         {
             int num = 0;
-            while (isDigit(str[i]))
+            while (isDigit(str[itr]))
             {
-                num = num * 10 + (str[i] - '0');
-                i++;
+                num = num * 10 + (str[itr] - '0');
+                itr++;
             }
             (*array)[index++] = num * sign;
         }
         else
         {
-            i++;
+            itr++;
         }
     }
 }
@@ -67,6 +72,11 @@ void inputStringToArray(int **array, int *size)
 struct Node *createNode(int val)
 {
     struct Node *newNode = (struct Node *)malloc(sizeof(struct Node));
+    if (newNode == NULL)
+    {
+        printf("Error in memory allocation");
+        return newNode;
+    }
     newNode->val = val;
     newNode->next = NULL;
     return newNode;
@@ -178,11 +188,11 @@ struct Node *findMaxNode(struct Node *start)
     return maxNode;
 }
 
-void swapNodes(struct Node *a, struct Node *b)
+void swapNodes(struct Node *node1, struct Node *node2)
 {
-    int temp = a->val;
-    a->val = b->val;
-    b->val = temp;
+    int temp = node1->val;
+    node1->val = node2->val;
+    node2->val = temp;
 }
 
 void ascendingSortLinkedList(struct Node **head)
@@ -261,11 +271,10 @@ void mergeLinkedList(struct Node **head, struct Node *oddHead, struct Node *even
 void printLinkedList(struct Node *head)
 {
 
-    struct Node *temp = head;
-    while (temp != NULL)
+    while (head = NULL)
     {
-        printf("%d ", temp->val);
-        temp = temp->next;
+        printf("%d ", head->val);
+        head = head->next;
     }
 }
 
@@ -279,6 +288,7 @@ void freeLinkedList(struct Node *head)
         temp = head;
         head = head->next;
         free(temp);
+        temp = NULL;
     }
 }
 
