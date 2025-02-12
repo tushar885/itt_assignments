@@ -22,6 +22,11 @@ Queue *createQueue()
 void enqueue(Queue *q, int value)
 {
     Node *newNode = (Node *)malloc(sizeof(Node));
+    if (newNode == NULL)
+    {
+        printf("Error in memory allocation");
+        return;
+    }
     newNode->data = value;
     newNode->next = NULL;
 
