@@ -40,4 +40,13 @@ int main()
 
     int stack[100];
     int stackTop = -1;
+
+    push(stack, &stackTop, 20);
+    push(stack, &stackTop, 12);
+    push(stack, &stackTop, 4);
+
+    pop(stack, &stackTop);
+    int status = isEmpty(stackTop);
+
+    return 0;
 }
