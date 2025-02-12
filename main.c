@@ -18,14 +18,14 @@ int isDigit(char ch)
 
 void inputStringToArray(int **array, int *size)
 {
-    char str[1000];
-    scanf("%[^\n]%*c", str);
+    char string[1000];
+    scanf("%[^\n]%*c", string);
     int i = 0;
     *size = 0;
 
-    while (str[i] != '\0')
+    while (string[i] != '\0')
     {
-        if (str[i] == ' ')
+        if (string[i] == ' ')
         {
             (*size)++;
             i++;
@@ -36,23 +36,28 @@ void inputStringToArray(int **array, int *size)
     *size = *size + 1;
 
     *array = malloc(*size * sizeof(int));
+    if (array == NULL)
+    {
+        printf("Error in memory allocation");
+        return;
+    }
     int index = 0;
     i = 0;
 
-    while (str[i] != '\0')
+    while (string[i] != '\0')
     {
         int sign = 1;
-        if (str[i] == '-')
+        if (string[i] == '-')
         {
             sign = -1;
             i++;
         }
-        if (isDigit(str[i]))
+        if (isDigit(string[i]))
         {
             int num = 0;
-            while (isDigit(str[i]))
+            while (isDigit(string[i]))
             {
-                num = num * 10 + (str[i] - '0');
+                num = num * 10 + (string[i] - '0');
                 i++;
             }
             (*array)[index++] = num * sign;
@@ -67,6 +72,11 @@ void inputStringToArray(int **array, int *size)
 struct Node *createNode(int val)
 {
     struct Node *newNode = (struct Node *)malloc(sizeof(struct Node));
+    if (newNode == NULL)
+    {
+        printf("Error in memory allocation");
+        return newNode;
+    }
     newNode->val = val;
     newNode->next = NULL;
     return newNode;
@@ -152,11 +162,10 @@ struct Node *mergeSort(struct Node *head)
 void printLinkedList(struct Node *head)
 {
 
-    struct Node *temp = head;
-    while (temp != NULL)
+    while (head != NULL)
     {
-        printf("%d ", temp->val);
-        temp = temp->next;
+        printf("%d ", head->val);
+        head = head->next;
     }
 }
 
@@ -170,6 +179,7 @@ void freeLinkedList(struct Node *head)
         temp = head;
         head = head->next;
         free(temp);
+        temp = NULL;
     }
 }
 
