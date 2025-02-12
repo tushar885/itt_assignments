@@ -22,6 +22,11 @@ typedef struct Stack
 Node *createNode(int data)
 {
     Node *newNode = (Node *)malloc(sizeof(Node));
+    if (newNode == NULL)
+    {
+        printf("Error in memory allocation");
+        return newNode;
+    }
     newNode->data = data;
     newNode->next = NULL;
     return newNode;
@@ -151,4 +156,6 @@ int main()
     printf("Popped: %d\n", pop(stack));
 
     printf("Top: %d\n", peekStack(stack));
+
+    return 0;
 }
