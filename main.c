@@ -1,152 +1,124 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#define MAX_SIZE 100
-
-struct Stack
+typedef struct Node
 {
-    int arr[MAX_SIZE];
-    int top;
-};
 
-void initStack(struct Stack *stack)
+    int data;
+    struct Node *next;
+
+} Node;
+
+typedef struct Stack
 {
-    stack->top = -1;
+
+    Node *top;
+    int size;
+
+} Stack;
+
+typedef struct Queue
+{
+
+    Stack *stack;
+
+} Queue;
+
+void initializeStack(Stack **stack)
+{
+    *stack = malloc(sizeof(Stack));
+    (*stack)->size = 0;
+    (*stack)->top = NULL;
 }
 
-int isEmpty(struct Stack *stack)
+void initializeQueue(Queue **que)
 {
-    return stack->top == -1;
+    *que = (Queue *)malloc(sizeof(Queue));
+    initializeStack(&((*que)->stack));
 }
 
-int isFull(struct Stack *stack)
+void pushStack(Stack **stack, int data)
 {
-    return stack->top == MAX_SIZE - 1;
-}
 
-void push(struct Stack *stack, int value)
-{
-    if (isFull(stack))
+    if ((*stack)->top == NULL)
     {
-        printf("Stack is full!\n");
+
+        Node *newNode = malloc(sizeof(Node));
+        newNode->data = data;
+        newNode->next = NULL;
+        (*stack)->top = newNode;
+    }
+    else
+    {
+
+        Node *newNode = malloc(sizeof(Node));
+        newNode->data = data;
+        newNode->next = (*stack)->top;
+        (*stack)->top = newNode;
+    }
+    (*stack)->size++;
+}
+
+int isEmptyStack(Stack *stack)
+{
+    return stack->size <= 0;
+}
+
+int popStack(Stack **stack)
+{
+
+    if (isEmptyStack(*stack) == 1)
+    {
+        printf("Stack is Empty");
+        return -1;
+    }
+
+    Node *poped = (*stack)->top;
+    int data = poped->data;
+    (*stack)->top = (*stack)->top->next;
+    free(poped);
+    (*stack)->size--;
+    printf("%d", data);
+    return data;
+}
+
+void pushToBottomOfStack(Stack **stack, int data)
+{
+
+    if (isEmptyStack(*stack) == 1)
+    {
+        pushStack(stack, data);
         return;
     }
-    stack->arr[++(stack->top)] = value;
+
+    int poped = popStack(stack);
+    pushToBottomOfStack(stack, data);
+    pushStack(stack, poped);
 }
 
-int pop(struct Stack *stack)
+void enqueue(Queue **que, int data)
 {
-    if (isEmpty(stack))
-    {
-        printf("Stack is empty!\n");
-        return -1;
-    }
-    return stack->arr[(stack->top)--];
+
+    pushToBottomOfStack(&((*que)->stack), data);
 }
 
-int peek(struct Stack *stack)
+int dequeue(Queue **que)
 {
-    if (isEmpty(stack))
-    {
-        printf("Stack is empty!\n");
-        return -1;
-    }
-    return stack->arr[stack->top];
-}
 
-int size(struct Stack *stack)
-{
-    return stack->top + 1;
-}
-struct Queue
-{
-    struct Stack stack;
-};
-
-void initQueue(struct Queue *queue)
-{
-    initStack(&queue->stack);
-}
-
-void enqueue(struct Queue *queue, int value)
-{
-    push(&queue->stack, value);
-}
-int dequeue(struct Queue *queue)
-{
-    if (isEmpty(&queue->stack))
-    {
-        printf("Queue is empty!\n");
-        return -1;
-    }
-
-    struct Stack tempStack;
-    initStack(&tempStack);
-
-    while (!isEmpty(&queue->stack))
-    {
-        push(&tempStack, pop(&queue->stack));
-    }
-
-    int frontElement = pop(&tempStack);
-    while (!isEmpty(&tempStack))
-    {
-        push(&queue->stack, pop(&tempStack));
-    }
-
-    return frontElement;
-}
-
-int peekQueue(struct Queue *queue)
-{
-    if (isEmpty(&queue->stack))
-    {
-        printf("Queue is empty!\n");
-        return -1;
-    }
-    struct Stack tempStack;
-    initStack(&tempStack);
-
-    while (!isEmpty(&queue->stack))
-    {
-        push(&tempStack, pop(&queue->stack));
-    }
-
-    int frontElement = peek(&tempStack);
-
-    while (!isEmpty(&tempStack))
-    {
-        push(&queue->stack, pop(&tempStack));
-    }
-
-    return frontElement;
-}
-
-int isQueueEmpty(struct Queue *queue)
-{
-    return isEmpty(&queue->stack);
-}
-int queueSize(struct Queue *queue)
-{
-    return size(&queue->stack);
+    return popStack(&((*que)->stack));
 }
 
 int main()
 {
-    struct Queue queue;
-    initQueue(&queue);
 
-    enqueue(&queue, 10);
-    enqueue(&queue, 20);
-    enqueue(&queue, 30);
+    Queue *que;
+    initializeQueue(&que);
 
-    printf("Front element: %d\n", peekQueue(&queue));
-    printf("Queue size: %d\n", queueSize(&queue));
+    enqueue(que, 12);
+    enqueue(que, 19);
+    enqueue(que, 1);
 
-    printf("Dequeued: %d\n", dequeue(&queue));
-    printf("Queue size after dequeue: %d\n", queueSize(&queue));
-
-    printf("Front element after dequeue: %d\n", peekQueue(&queue));
+    dequeue(que);
 
     return 0;
 }
