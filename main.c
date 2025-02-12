@@ -22,14 +22,14 @@ int size(Node *top)
         printf("the len is : 0");
         return 0;
     }
-    int len = 0;
+    int length = 0;
     while (top != NULL)
     {
-        len++;
+        length++;
         top = top->next;
     }
-    printf("the len is : %d\n", len);
-    return len;
+    printf("the len is : %d\n", length);
+    return length;
 }
 
 int isEmpty(Node *top)
@@ -46,6 +46,11 @@ int isEmpty(Node *top)
 void push(Node **top, int data)
 {
     Node *newNode = createNode(data);
+    if (newNode == NULL)
+    {
+        printf("Error in memory allocation");
+        return;
+    }
     newNode->next = *top;
     *top = newNode;
 }
@@ -84,4 +89,6 @@ int main()
     size(head);
     push(&head, 13);
     pop(&head);
+
+    return 0;
 }
