@@ -21,6 +21,13 @@ void insert(int key, int value)
 {
     int index = hashFunction(key);
     Node *newNode = (Node *)malloc(sizeof(Node));
+
+    if (newNode == NULL)
+    {
+        printf("Error in memory allocation");
+        return;
+    }
+
     newNode->key = key;
     newNode->value = value;
     newNode->next = NULL;
@@ -148,4 +155,6 @@ int main()
             printf("Invalid choice.\n");
         }
     }
+
+    return 0;
 }
