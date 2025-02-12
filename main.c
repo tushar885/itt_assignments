@@ -9,17 +9,13 @@ struct Node
 
 struct FreqNode
 {
-    int val;
+    int value;
     int freq;
 };
 
 int isDigit(char ch)
 {
-    if (ch >= '0' && ch <= '9')
-    {
-        return 1;
-    }
-    return 0;
+    return (ch >= '0' && ch <= '9');
 }
 
 void inputStringToArray(int **array, int *size)
@@ -42,30 +38,35 @@ void inputStringToArray(int **array, int *size)
     *size = *size + 1;
 
     *array = malloc(*size * sizeof(int));
+    if (array == NULL)
+    {
+        printf("Error in memory allocation");
+        return;
+    }
     int index = 0;
-    i = 0;
+    int iterator = 0;
 
-    while (str[i] != '\0')
+    while (str[iterator] != '\0')
     {
         int sign = 1;
-        if (str[i] == '-')
+        if (str[iterator] == '-')
         {
             sign = -1;
-            i++;
+            iterator++;
         }
-        if (isDigit(str[i]))
+        if (isDigit(str[iterator]))
         {
             int num = 0;
-            while (isDigit(str[i]))
+            while (isDigit(str[iterator]))
             {
-                num = num * 10 + (str[i] - '0');
-                i++;
+                num = num * 10 + (str[iterator] - '0');
+                iterator++;
             }
             (*array)[index++] = num * sign;
         }
         else
         {
-            i++;
+            iterator++;
         }
     }
 }
@@ -73,6 +74,11 @@ void inputStringToArray(int **array, int *size)
 struct Node *createNode(int val)
 {
     struct Node *newNode = (struct Node *)malloc(sizeof(struct Node));
+    if (newNode == NULL)
+    {
+        printf("Error in memory allocation");
+        return newNode;
+    }
     newNode->val = val;
     newNode->next = NULL;
     return newNode;
@@ -86,9 +92,9 @@ struct Node *createList(int *array, int size)
     struct Node *head = createNode(array[0]);
     struct Node *current = head;
 
-    for (int i = 1; i < size; i++)
+    for (int iterator = 1; iterator < size; iterator++)
     {
-        current->next = createNode(array[i]);
+        current->next = createNode(array[iterator]);
         current = current->next;
     }
 
@@ -107,7 +113,7 @@ void countFrequencies(struct Node *head, struct FreqNode *freq, int *uniqueCount
 
         for (int i = 0; i < *uniqueCount; i++)
         {
-            if (freq[i].val == value)
+            if (freq[i].value == value)
             {
                 freq[i].freq++;
                 found = 1;
@@ -117,7 +123,7 @@ void countFrequencies(struct Node *head, struct FreqNode *freq, int *uniqueCount
 
         if (!found)
         {
-            freq[*uniqueCount].val = value;
+            freq[*uniqueCount].value = value;
             freq[*uniqueCount].freq = 1;
             (*uniqueCount)++;
         }
@@ -141,7 +147,7 @@ void sortFreqArray(struct FreqNode *freq, int n)
             }
 
             else if (freq[j].freq == freq[j + 1].freq &&
-                     freq[j].val > freq[j + 1].val)
+                     freq[j].value > freq[j + 1].value)
             {
                 struct FreqNode temp = freq[j];
                 freq[j] = freq[j + 1];
@@ -160,7 +166,7 @@ void constructSortedList(struct Node *head, struct FreqNode *freq, int uniqueCou
         int count = freq[i].freq;
         while (count > 0)
         {
-            current->val = freq[i].val;
+            current->val = freq[i].value;
             current = current->next;
             count--;
         }
@@ -188,6 +194,7 @@ void freeLinkedList(struct Node *head)
         temp = head;
         head = head->next;
         free(temp);
+        temp = NULL;
     }
 }
 
