@@ -23,6 +23,11 @@ typedef struct Stack
 Node *createNode(int data)
 {
     Node *newNode = (Node *)malloc(sizeof(Node));
+    if (newNode == NULL)
+    {
+        printf("Error in memory allocation");
+        return newNode;
+    }
     newNode->data = data;
     newNode->next = NULL;
     return newNode;
@@ -83,6 +88,7 @@ int queueSize(Queue *q)
 Stack *createStack()
 {
     Stack *stack = (Stack *)malloc(sizeof(Stack));
+
     stack->q1 = createQueue();
     stack->q2 = createQueue();
     return stack;
@@ -143,6 +149,10 @@ int stackSize(Stack *stack)
 int main()
 {
     Stack *stack = createStack();
+    push(stack, 20);
+    push(stack, 10);
+    push(stack, 19);
 
+    pop(stack);
     return 0;
 }
