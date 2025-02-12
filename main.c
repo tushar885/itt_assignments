@@ -69,4 +69,10 @@ int main()
     int queue[100];
     int front = -1;
     int rear = -1;
+
+    enqueue(queue, &front, &rear, 12);
+    enqueue(queue, &front, &rear, 10);
+    dequeue(queue, &front, &rear);
+
+    return 0;
 }
