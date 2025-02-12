@@ -18,14 +18,14 @@ int isDigit(char ch)
 
 void inputStringToArray(int **array, int *size)
 {
-    char str[1000];
-    scanf("%[^\n]%*c", str);
+    char string[1000];
+    scanf("%[^\n]%*c", string);
     int i = 0;
     *size = 0;
 
-    while (str[i] != '\0')
+    while (string[i] != '\0')
     {
-        if (str[i] == ' ')
+        if (string[i] == ' ')
         {
             (*size)++;
             i++;
@@ -36,23 +36,28 @@ void inputStringToArray(int **array, int *size)
     *size = *size + 1;
 
     *array = malloc(*size * sizeof(int));
+    if (array == NULL)
+    {
+        printf("Error in memory allocation");
+        return;
+    }
     int index = 0;
     i = 0;
 
-    while (str[i] != '\0')
+    while (string[i] != '\0')
     {
         int sign = 1;
-        if (str[i] == '-')
+        if (string[i] == '-')
         {
             sign = -1;
             i++;
         }
-        if (isDigit(str[i]))
+        if (isDigit(string[i]))
         {
             int num = 0;
-            while (isDigit(str[i]))
+            while (isDigit(string[i]))
             {
-                num = num * 10 + (str[i] - '0');
+                num = num * 10 + (string[i] - '0');
                 i++;
             }
             (*array)[index++] = num * sign;
@@ -91,6 +96,11 @@ int hasCycle(struct Node *head)
 struct Node *createNode(int val)
 {
     struct Node *newNode = (struct Node *)malloc(sizeof(struct Node));
+    if (newNode == NULL)
+    {
+        printf("Error in memory allocation");
+        return newNode;
+    }
     newNode->val = val;
     newNode->next = NULL;
     return newNode;
@@ -105,12 +115,12 @@ struct Node *createList(int *arr, int size, int pos)
     struct Node *current = head;
     struct Node *cycleNode = NULL;
 
-    for (int i = 1; i < size; i++)
+    for (int iterator = 1; iterator < size; iterator++)
     {
-        current->next = createNode(arr[i]);
+        current->next = createNode(arr[iterator]);
         current = current->next;
 
-        if (i == pos)
+        if (iterator == pos)
         {
             cycleNode = current;
         }
@@ -134,6 +144,7 @@ void freeLinkedList(struct Node *head)
         temp = head;
         head = head->next;
         free(temp);
+        temp = NULL;
     }
 }
 
@@ -144,10 +155,10 @@ int main()
 
     inputStringToArray(&array, &size);
 
-    int pos;
-    scanf("%d", &pos);
+    int position;
+    scanf("%d", &position);
 
-    struct Node *head = createList(array, size, pos);
+    struct Node *head = createList(array, size, position);
 
     if (hasCycle(head))
     {
